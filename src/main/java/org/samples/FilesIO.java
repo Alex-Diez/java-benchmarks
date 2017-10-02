@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
-@Fork(value = 3, jvmArgsAppend = {"-XX:BiasedLockingStartupDelay=0"})
+@Fork(value = 3)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @BenchmarkMode(Mode.AverageTime)
 @Warmup(iterations = 5)
@@ -31,7 +31,7 @@ public class FilesIO {
 
   @Setup
   public void setUp() throws Exception {
-    exist = new File("temp", System.getProperty("user.dir"));
+    exist = new File(System.getProperty("user.dir"), "temp");
     assert exist.createNewFile();
     pathToExistedFile = exist.getAbsolutePath();
     notExist = new File("not-exist");
