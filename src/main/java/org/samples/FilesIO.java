@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
-@Fork(value = 3, jvmArgsAppend = {"-XX:BiasedLockingStartupDelay=0"})
+@Fork(value = 3)
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @BenchmarkMode(Mode.AverageTime)
 @Warmup(iterations = 5)
