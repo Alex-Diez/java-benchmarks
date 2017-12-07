@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 @OutputTimeUnit(TimeUnit.MICROSECONDS)
 @BenchmarkMode(Mode.AverageTime)
 @Warmup(iterations = 5)
-@Measurement(iterations = 5, timeUnit = TimeUnit.MILLISECONDS)
+@Measurement(iterations = 5, timeUnit = TimeUnit.MICROSECONDS)
 public class FilesIO {
 
   private File exist;
@@ -31,7 +31,7 @@ public class FilesIO {
 
   @Setup
   public void setUp() throws Exception {
-    exist = new File("temp", System.getProperty("user.dir"));
+    exist = new File(System.getProperty("user.dir"), "temp");
     assert exist.createNewFile();
     pathToExistedFile = exist.getAbsolutePath();
     notExist = new File("not-exist");

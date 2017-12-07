@@ -20,10 +20,10 @@ import java.util.concurrent.TimeUnit;
 
 @State(Scope.Benchmark)
 @Fork(value = 1, jvmArgsAppend = {"-XX:BiasedLockingStartupDelay=0"})
-@OutputTimeUnit(TimeUnit.MICROSECONDS)
+@OutputTimeUnit(TimeUnit.NANOSECONDS)
 @BenchmarkMode(Mode.AverageTime)
 @Warmup(iterations = 5)
-@Measurement(iterations = 5, timeUnit = TimeUnit.MILLISECONDS)
+@Measurement(iterations = 5, timeUnit = TimeUnit.NANOSECONDS)
 public class VectorVsArrayList {
 
   private static final int SIZE = 50 * 1000 * 1000;
