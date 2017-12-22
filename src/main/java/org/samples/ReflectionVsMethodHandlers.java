@@ -30,15 +30,46 @@ public class ReflectionVsMethodHandlers {
     private static final String RETURN_CONSTANT_METHOD_NAME = "returnConstant";
     private static final String FIELD_INCREMENT_METHOD_NAME = "fieldIncrement";
 
+    private static final MethodHandle staticFinalArrayFoldingMethodHandling;
+    private static final MethodHandle staticFinalReturnConstantMethodHandling;
+    private static final MethodHandle staticFinalFieldIncrementMethodHandling;
+
     private int[] data = new int[1024];
     private int field;
 
+    static {
+        MethodHandles.Lookup lookup = MethodHandles.lookup();
+        MethodType type = MethodType.methodType(int.class);
+        try {
+            staticFinalArrayFoldingMethodHandling = lookup.findVirtual(ReflectionVsMethodHandlers.class, ARRAY_FOLDING_METHOD_NAME, type);
+            staticFinalReturnConstantMethodHandling = lookup.findVirtual(ReflectionVsMethodHandlers.class, RETURN_CONSTANT_METHOD_NAME, type);
+            staticFinalFieldIncrementMethodHandling = lookup.findVirtual(ReflectionVsMethodHandlers.class, FIELD_INCREMENT_METHOD_NAME, type);
+        } catch (NoSuchMethodException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private Method arrayFoldingReflection;
     private MethodHandle arrayFoldingMethodHandling;
+    private final MethodHandle finalArrayFoldingMethodHandling;
     private Method returnConstantReflection;
     private MethodHandle returnConstantMethodHandling;
+    private final MethodHandle finalReturnConstantMethodHandling;
     private Method fieldIncrementReflection;
     private MethodHandle fieldIncrementMethodHandling;
+    private final MethodHandle finalFieldIncrementMethodHandling;
+
+    public ReflectionVsMethodHandlers() {
+        MethodHandles.Lookup lookup = MethodHandles.lookup();
+        MethodType type = MethodType.methodType(int.class);
+        try {
+            finalArrayFoldingMethodHandling = lookup.findVirtual(ReflectionVsMethodHandlers.class, ARRAY_FOLDING_METHOD_NAME, type);
+            finalReturnConstantMethodHandling = lookup.findVirtual(ReflectionVsMethodHandlers.class, RETURN_CONSTANT_METHOD_NAME, type);
+            finalFieldIncrementMethodHandling = lookup.findVirtual(ReflectionVsMethodHandlers.class, FIELD_INCREMENT_METHOD_NAME, type);
+        } catch (NoSuchMethodException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Setup
     public void initData() throws Exception {
@@ -89,6 +120,16 @@ public class ReflectionVsMethodHandlers {
     }
 
     @Benchmark
+    public int finalArrayFoldingMethodHandlerCall() throws Throwable {
+        return (int) finalArrayFoldingMethodHandling.invokeExact(this);
+    }
+
+    @Benchmark
+    public int staticFinalArrayFoldingMethodHandlerCall() throws Throwable {
+        return (int) staticFinalArrayFoldingMethodHandling.invokeExact(this);
+    }
+
+    @Benchmark
     public int returnConstantBaseline() {
         return returnConstant();
     }
@@ -104,6 +145,16 @@ public class ReflectionVsMethodHandlers {
     }
 
     @Benchmark
+    public int finalReturnConstantMethodHandlerCall() throws Throwable {
+        return (int) finalReturnConstantMethodHandling.invokeExact(this);
+    }
+
+    @Benchmark
+    public int staticFinalReturnConstantMethodHandlerCall() throws Throwable {
+        return (int) staticFinalReturnConstantMethodHandling.invokeExact(this);
+    }
+
+    @Benchmark
     public int fieldIncrementBaseline() {
         return fieldIncrement();
     }
@@ -116,5 +167,15 @@ public class ReflectionVsMethodHandlers {
     @Benchmark
     public int fieldIncrementMethodHandlerCall() throws Throwable {
         return (int) fieldIncrementMethodHandling.invokeExact(this);
+    }
+
+    @Benchmark
+    public int finalFieldIncrementMethodHandlerCall() throws Throwable {
+        return (int) finalFieldIncrementMethodHandling.invokeExact(this);
+    }
+
+    @Benchmark
+    public int staticFinalFieldIncrementMethodHandlerCall() throws Throwable {
+        return (int) staticFinalFieldIncrementMethodHandling.invokeExact(this);
     }
 }
